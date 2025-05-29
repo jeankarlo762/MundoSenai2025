@@ -9,11 +9,13 @@
 <body>
     <div class="container">
         <h2>Cadastro</h2>
-        <form id="cadastroForm">
+        <form id="cadastroForm" name="cadastro" method="POST" data-netlify="true">
+            <input type="hidden" name="form-name" value="cadastro" />
+
             <label for="nome">Nome:</label>
             <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required />
             <div class="error" id="erroNome"></div>
-            
+
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" placeholder="Digite seu email" required />
             <div class="error" id="erroEmail"></div>
@@ -63,7 +65,6 @@
             const erroEmail = document.getElementById("erroEmail");
             const erroSenha = document.getElementById("erroSenha");
 
-            // Limpar mensagens anteriores
             erroNome.textContent = "";
             erroEmail.textContent = "";
             erroSenha.innerHTML = "";
@@ -115,13 +116,23 @@
 
         function aceitarTermos() {
             termosModal.style.display = "none";
-            alert("Cadastro concluído com sucesso!");
-            form.reset();
-            // Aqui você pode enviar os dados para o servidor, se quiser
-            // form.submit();
+
+            const data = new FormData(form);
+
+            fetch("/", {
+                method: "POST",
+                body: data,
+            })
+            .then(() => {
+                alert("Cadastro concluído com sucesso!");
+                form.reset();
+            })
+            .catch((error) => {
+                alert("Erro ao enviar o formulário.");
+                console.error(error);
+            });
         }
 
-        // Fecha modal ao clicar fora do conteúdo (opcional)
         window.onclick = function(event) {
             if (event.target === termosModal) {
                 termosModal.style.display = "none";
