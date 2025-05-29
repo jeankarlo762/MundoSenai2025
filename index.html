@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tela de Cadastro</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <h2>Cadastro</h2>
+        <form id="cadastroForm">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required />
+            <div class="error" id="erroNome"></div>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Digite seu email" required />
+            <div class="error" id="erroEmail"></div>
+
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required />
+            <div class="error" id="erroSenha"></div>
+
+            <input type="submit" value="Cadastrar" />
+        </form>
+    </div>
+
+    <!-- Modal de Termos de Uso -->
+    <div class="termosDeUso" id="termosModal">
+        <div class="modal-content">
+            <h2>Termos de Uso</h2>
+            <p>Ao utilizar este sistema, você concorda com os seguintes termos:</p>
+            <ul>
+                <li>Você é responsável por manter seus dados seguros.</li>
+                <li>É proibido compartilhar sua conta com terceiros.</li>
+                <li>O uso indevido pode acarretar suspensão.</li>
+                <li>Estes termos podem ser atualizados sem aviso prévio.</li>
+            </ul>
+            <button onclick="aceitarTermos()">Aceito os Termos</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("cadastroForm");
+        const termosModal = document.getElementById("termosModal");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault(); // Impede envio imediato
+
+            if (validarFormulario()) {
+                // Mostra modal dos termos
+                termosModal.style.display = "flex";
+            }
+        });
+
+        function validarFormulario() {
+            const nome = document.getElementById("nome").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const senha = document.getElementById("senha").value;
+
+            const erroNome = document.getElementById("erroNome");
+            const erroEmail = document.getElementById("erroEmail");
+            const erroSenha = document.getElementById("erroSenha");
+
+            // Limpar mensagens anteriores
+            erroNome.textContent = "";
+            erroEmail.textContent = "";
+            erroSenha.innerHTML = "";
+
+            let formValido = true;
+
+            if (nome === "") {
+                erroNome.textContent = "O nome é obrigatório!";
+                formValido = false;
+            } else if (nome.length < 3) {
+                erroNome.textContent = "O nome deve ter no mínimo 3 caracteres!";
+                formValido = false;
+            }
+
+            if (email === "") {
+                erroEmail.textContent = "O e-mail é obrigatório!";
+                formValido = false;
+            } else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(email)) {
+                erroEmail.textContent = "Formato de e-mail inválido!";
+                formValido = false;
+            } else if (email.length < 5) {
+                erroEmail.textContent = "O e-mail deve ter no mínimo 5 caracteres!";
+                formValido = false;
+            }
+
+            if (senha.length < 6) {
+                erroSenha.innerHTML += "A senha deve ter pelo menos 6 caracteres.<br>";
+                formValido = false;
+            }
+            if (!/[a-z]/.test(senha)) {
+                erroSenha.innerHTML += "A senha deve conter pelo menos uma letra minúscula.<br>";
+                formValido = false;
+            }
+            if (!/[A-Z]/.test(senha)) {
+                erroSenha.innerHTML += "A senha deve conter pelo menos uma letra maiúscula.<br>";
+                formValido = false;
+            }
+            if (!/\d/.test(senha)) {
+                erroSenha.innerHTML += "A senha deve conter pelo menos um número.<br>";
+                formValido = false;
+            }
+            if (!/[^a-zA-Z0-9]/.test(senha)) {
+                erroSenha.innerHTML += "A senha deve conter pelo menos um caractere especial.<br>";
+                formValido = false;
+            }
+
+            return formValido;
+        }
+
+        function aceitarTermos() {
+            termosModal.style.display = "none";
+            alert("Cadastro concluído com sucesso!");
+            form.reset();
+            // Aqui você pode enviar os dados para o servidor, se quiser
+            // form.submit();
+        }
+
+        // Fecha modal ao clicar fora do conteúdo (opcional)
+        window.onclick = function(event) {
+            if (event.target === termosModal) {
+                termosModal.style.display = "none";
+            }
+        };
+    </script>
+</body>
+</html>
