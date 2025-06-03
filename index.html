@@ -52,7 +52,7 @@
 <body>
     <div class="container">
         <h2>Cadastro</h2>
-        <form id="cadastroForm" name="cadastroForm" method="POST" netlify>
+        <form id="cadastroForm" name="cadastroForm" method="POST" data-netlify="true" action="/obrigado.html">
             <input type="hidden" name="form-name" value="cadastroForm" />
 
             <label for="nome">Nome:</label>
@@ -93,7 +93,7 @@
 
         form.addEventListener("submit", function(event) {
             if (!podeEnviar) {
-                event.preventDefault(); 
+                event.preventDefault();
 
                 if (validarFormulario()) {
                     termosModal.style.display = "flex";
@@ -157,7 +157,7 @@
 
             alert("Cadastro concluído com sucesso!");
 
-            form.submit();
+            form.submit(); // Agora envia para Netlify e redireciona
         }
 
         window.onclick = function(event) {
