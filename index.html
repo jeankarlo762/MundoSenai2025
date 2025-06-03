@@ -5,11 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tela de Cadastro</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+        .termosDeUso {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h2>Cadastro</h2>
-        <form id="cadastroForm">
+        <form id="cadastroForm" name="cadastroForm" method="POST" netlify>
+            <input type="hidden" name="form-name" value="cadastroForm" />
+
             <label for="nome">Nome:</label>
             <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required />
             <div class="error" id="erroNome"></div>
@@ -44,13 +89,15 @@
     <script>
         const form = document.getElementById("cadastroForm");
         const termosModal = document.getElementById("termosModal");
+        let podeEnviar = false;
 
         form.addEventListener("submit", function(event) {
-            event.preventDefault(); // Impede envio imediato
+            if (!podeEnviar) {
+                event.preventDefault(); 
 
-            if (validarFormulario()) {
-                // Mostra modal dos termos
-                termosModal.style.display = "flex";
+                if (validarFormulario()) {
+                    termosModal.style.display = "flex";
+                }
             }
         });
 
@@ -63,29 +110,20 @@
             const erroEmail = document.getElementById("erroEmail");
             const erroSenha = document.getElementById("erroSenha");
 
-            // Limpar mensagens anteriores
             erroNome.textContent = "";
             erroEmail.textContent = "";
             erroSenha.innerHTML = "";
 
             let formValido = true;
 
-            if (nome === "") {
-                erroNome.textContent = "O nome é obrigatório!";
-                formValido = false;
-            } else if (nome.length < 3) {
+            if (nome.length < 3) {
                 erroNome.textContent = "O nome deve ter no mínimo 3 caracteres!";
                 formValido = false;
             }
 
-            if (email === "") {
-                erroEmail.textContent = "O e-mail é obrigatório!";
-                formValido = false;
-            } else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(email)) {
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (!emailRegex.test(email)) {
                 erroEmail.textContent = "Formato de e-mail inválido!";
-                formValido = false;
-            } else if (email.length < 5) {
-                erroEmail.textContent = "O e-mail deve ter no mínimo 5 caracteres!";
                 formValido = false;
             }
 
@@ -94,19 +132,19 @@
                 formValido = false;
             }
             if (!/[a-z]/.test(senha)) {
-                erroSenha.innerHTML += "A senha deve conter pelo menos uma letra minúscula.<br>";
+                erroSenha.innerHTML += "A senha deve conter ao menos uma letra minúscula.<br>";
                 formValido = false;
             }
             if (!/[A-Z]/.test(senha)) {
-                erroSenha.innerHTML += "A senha deve conter pelo menos uma letra maiúscula.<br>";
+                erroSenha.innerHTML += "A senha deve conter ao menos uma letra maiúscula.<br>";
                 formValido = false;
             }
             if (!/\d/.test(senha)) {
-                erroSenha.innerHTML += "A senha deve conter pelo menos um número.<br>";
+                erroSenha.innerHTML += "A senha deve conter ao menos um número.<br>";
                 formValido = false;
             }
             if (!/[^a-zA-Z0-9]/.test(senha)) {
-                erroSenha.innerHTML += "A senha deve conter pelo menos um caractere especial.<br>";
+                erroSenha.innerHTML += "A senha deve conter ao menos um caractere especial.<br>";
                 formValido = false;
             }
 
@@ -115,16 +153,13 @@
 
         function aceitarTermos() {
             termosModal.style.display = "none";
-            alert("Cadastro concluído com sucesso!");
-            form.reset();
+            podeEnviar = true;
 
-             window.location.href = "https://www.canva.com/design/DAGoBl4s4pI/DnodIKCX2KUhfQLxBaBNZQ/view?utm_content=DAGoBl4s4pI&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h604f2b559b";
-   
-            // Aqui você pode enviar os dados para o servidor, se quiser
-            // form.submit();
+            alert("Cadastro concluído com sucesso!");
+
+            form.submit();
         }
 
-        // Fecha modal ao clicar fora do conteúdo (opcional)
         window.onclick = function(event) {
             if (event.target === termosModal) {
                 termosModal.style.display = "none";
